@@ -5,7 +5,7 @@ import com.brigido.bomba.dto.wire.WireResponseDTO;
 import com.brigido.bomba.entity.WireEntity;
 import com.brigido.bomba.repository.WireRepository;
 import com.brigido.bomba.service.WireService;
-import com.brigido.bomba.wire_strategy.*;
+import com.brigido.bomba.strategy.wire.*;
 import com.google.gson.Gson;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;

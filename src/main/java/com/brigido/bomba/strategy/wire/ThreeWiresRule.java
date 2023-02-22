@@ -1,4 +1,4 @@
-package com.brigido.bomba.wire_strategy;
+package com.brigido.bomba.strategy.wire;
 
 import com.brigido.bomba.dto.wire.WireDTO;
 import static com.brigido.bomba.enumeration.Color.*;
