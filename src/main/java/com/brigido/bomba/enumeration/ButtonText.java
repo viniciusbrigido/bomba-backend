@@ -1,6 +1,6 @@
 package com.brigido.bomba.enumeration;
 
-public enum TextoBotao {
+public enum ButtonText {
     ABORTAR,
     DETONAR,
     SEGURE,

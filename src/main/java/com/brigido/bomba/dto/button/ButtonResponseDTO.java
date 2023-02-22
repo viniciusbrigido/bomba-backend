@@ -1,4 +1,4 @@
-package com.brigido.bomba.dto;
+package com.brigido.bomba.dto.button;
 
 import lombok.*;
 import java.util.UUID;

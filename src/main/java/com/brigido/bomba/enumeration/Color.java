@@ -1,6 +1,6 @@
 package com.brigido.bomba.enumeration;
 
-public enum Cor {
+public enum Color {
     PRETO,
     VERMELHO,
     BRANCO,

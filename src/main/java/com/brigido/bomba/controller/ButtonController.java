@@ -1,6 +1,7 @@
 package com.brigido.bomba.controller;
 
 import com.brigido.bomba.dto.*;
+import com.brigido.bomba.dto.button.*;
 import com.brigido.bomba.entity.ButtonEntity;
 import com.brigido.bomba.service.ButtonService;
 import com.google.gson.Gson;
@@ -33,7 +34,7 @@ public class ButtonController {
     }
 
     @PostMapping("/resolve-second-step")
-    public ButtonResponseDTO resolveSecondStep(@RequestBody ButtonResponseSecondStepDTO dto) {
+    public ButtonResponseDTO resolveSecondStep(@RequestBody ButtonSecondStepDTO dto) {
         return buttonService.resolveSecondStep(dto);
     }
 

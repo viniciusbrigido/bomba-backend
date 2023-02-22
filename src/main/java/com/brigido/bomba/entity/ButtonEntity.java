@@ -1,7 +1,7 @@
 package com.brigido.bomba.entity;
 
-import com.brigido.bomba.enumeration.Cor;
-import com.brigido.bomba.enumeration.TextoBotao;
+import com.brigido.bomba.enumeration.Color;
+import com.brigido.bomba.enumeration.ButtonText;
 import jakarta.persistence.*;
 import lombok.*;
 import java.io.Serializable;
@@ -24,17 +24,17 @@ public class ButtonEntity implements Serializable {
     private UUID id;
 
     @Enumerated(EnumType.STRING)
-    private TextoBotao texto;
+    private ButtonText text;
 
     @Enumerated(EnumType.STRING)
-    private Cor corBotao;
+    private Color buttonColor;
 
     @Enumerated(EnumType.STRING)
-    private Cor corLed;
+    private Color ledColor;
 
     private String leds;
 
-    private Integer pilhas;
+    private Integer batteries;
 
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "created_at")

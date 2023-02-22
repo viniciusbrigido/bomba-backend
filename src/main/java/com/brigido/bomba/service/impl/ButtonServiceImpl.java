@@ -1,6 +1,7 @@
 package com.brigido.bomba.service.impl;
 
 import com.brigido.bomba.dto.*;
+import com.brigido.bomba.dto.button.*;
 import com.brigido.bomba.entity.ButtonEntity;
 import com.brigido.bomba.enumeration.*;
 import com.brigido.bomba.repository.ButtonRepository;
@@ -10,9 +11,9 @@ import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.util.*;
-import static com.brigido.bomba.enumeration.Cor.*;
+import static com.brigido.bomba.enumeration.Color.*;
 import static com.brigido.bomba.enumeration.Indicator.*;
-import static com.brigido.bomba.enumeration.TextoBotao.*;
+import static com.brigido.bomba.enumeration.ButtonText.*;
 import static java.lang.String.*;
 
 @Service
@@ -37,12 +38,12 @@ public class ButtonServiceImpl implements ButtonService {
         if (isAzulAbortar(dto)) {
             message = PRESSIONE_BOTAO_LED;
             nextStep = true;
-        } else if (isPilhasDetonar(dto)) {
+        } else if (isBatteriesDetonar(dto)) {
             message = PRESSIONE_SOLTE_BOTAO;
         } else if (isBrancoCar(dto)) {
             message = PRESSIONE_BOTAO_LED;
             nextStep = true;
-        } else if (isPilhasFrk(dto)) {
+        } else if (isBatteriesFrk(dto)) {
             message = PRESSIONE_SOLTE_BOTAO;
         } else if (isAmarelo(dto)) {
             message = PRESSIONE_BOTAO_LED;
@@ -62,50 +63,50 @@ public class ButtonServiceImpl implements ButtonService {
     }
 
     @Override
-    public ButtonResponseDTO resolveSecondStep(ButtonResponseSecondStepDTO dto) {
+    public ButtonResponseDTO resolveSecondStep(ButtonSecondStepDTO dto) {
         Optional<ButtonEntity> button = buttonRepository.findById(dto.getId());
         if (button.isPresent()) {
             ButtonEntity buttonEntity = button.get();
-            buttonEntity.setCorLed(dto.getCorLed());
+            buttonEntity.setLedColor(dto.getColorLed());
             buttonRepository.save(buttonEntity);
         }
 
         return ButtonResponseDTO.builder()
-                .message(mostraMsgTempo(dto.getCorLed()))
+                .message(mostraMsgTempo(dto.getColorLed()))
                 .nextStep(false)
                 .build();
     }
 
     private boolean isAzulAbortar(ButtonDTO dto) {
-        return AZUL.equals(dto.getCorBotao()) && ABORTAR.equals(dto.getTexto());
+        return AZUL.equals(dto.getButtonColor()) && ABORTAR.equals(dto.getText());
     }
 
-    private boolean isPilhasDetonar(ButtonDTO dto) {
-        return dto.getPilhas() > 1 && DETONAR.equals(dto.getTexto());
+    private boolean isBatteriesDetonar(ButtonDTO dto) {
+        return dto.getBatteries() > 1 && DETONAR.equals(dto.getText());
     }
 
     private boolean isBrancoCar(ButtonDTO dto) {
-        return BRANCO.equals(dto.getCorBotao()) && contemIndicadorAceso(CAR, dto.getLeds());
+        return BRANCO.equals(dto.getButtonColor()) && contemIndicadorAceso(CAR, dto.getLeds());
     }
 
-    private boolean isPilhasFrk(ButtonDTO dto) {
-        return dto.getPilhas() > 2 && contemIndicadorAceso(FRK, dto.getLeds());
+    private boolean isBatteriesFrk(ButtonDTO dto) {
+        return dto.getBatteries() > 2 && contemIndicadorAceso(FRK, dto.getLeds());
     }
 
     private boolean isAmarelo(ButtonDTO dto) {
-        return AMARELO.equals(dto.getCorBotao());
+        return AMARELO.equals(dto.getButtonColor());
     }
 
     private boolean isVermelhoSegure(ButtonDTO dto) {
-        return VERMELHO.equals(dto.getCorBotao()) && SEGURE.equals(dto.getTexto());
+        return VERMELHO.equals(dto.getButtonColor()) && SEGURE.equals(dto.getText());
     }
 
-    private String mostraMsgTempo(Cor corLed) {
-        return format("Solte quando o marcador de tempo tiver um %s em qualquer posição.", getSegundoPorLed(corLed));
+    private String mostraMsgTempo(Color colorLed) {
+        return format("Solte quando o marcador de tempo tiver um %s em qualquer posição.", getSegundoPorLed(colorLed));
     }
 
-    private Integer getSegundoPorLed(Cor corLed) {
-        return switch (corLed) {
+    private Integer getSegundoPorLed(Color colorLed) {
+        return switch (colorLed) {
             case AZUL -> 4;
             case AMARELO -> 5;
             default -> 1;
@@ -118,16 +119,16 @@ public class ButtonServiceImpl implements ButtonService {
 
     @Transactional
     public ButtonEntity create(ButtonDTO dto) {
-        var user = ButtonEntity.builder()
-                .texto(dto.getTexto())
-                .corBotao(dto.getCorBotao())
-                .corLed(dto.getCorLed())
-                .pilhas(dto.getPilhas())
+        var button = ButtonEntity.builder()
+                .text(dto.getText())
+                .buttonColor(dto.getButtonColor())
+                .ledColor(dto.getLedColor())
+                .batteries(dto.getBatteries())
                 .leds(gson.toJson(dto.getLeds()))
                 .createdAt(new Date())
                 .build();
 
-        return buttonRepository.save(user);
+        return buttonRepository.save(button);
     }
 
     @Override
