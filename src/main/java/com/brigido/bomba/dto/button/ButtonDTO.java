@@ -5,6 +5,7 @@ import com.brigido.bomba.enumeration.Color;
 import com.brigido.bomba.enumeration.ButtonText;
 import lombok.*;
 import java.util.*;
+import static java.util.Optional.ofNullable;
 
 @Getter
 @Setter
@@ -19,4 +20,8 @@ public class ButtonDTO {
     private List<LedDTO> leds;
     private Integer batteries;
     private Date createdAt;
+
+    public List<LedDTO> getLeds() {
+        return ofNullable(leds).orElseGet(() -> leds = new ArrayList<>());
+    }
 }
