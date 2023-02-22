@@ -6,6 +6,7 @@ import com.brigido.bomba.entity.ButtonEntity;
 import com.brigido.bomba.enumeration.*;
 import com.brigido.bomba.repository.ButtonRepository;
 import com.brigido.bomba.service.ButtonService;
+import com.brigido.bomba.strategy.button.*;
 import com.google.gson.Gson;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,9 +20,6 @@ import static java.lang.String.*;
 @Service
 public class ButtonServiceImpl implements ButtonService {
     
-    private static final String PRESSIONE_SOLTE_BOTAO = "Pressione e imediamente solte o botão.";
-    private static final String PRESSIONE_BOTAO_LED = "Pressione o botão e informe a luz no led que aparece à direita do botão.";
-
     @Autowired
     private ButtonRepository buttonRepository;
 
@@ -31,35 +29,25 @@ public class ButtonServiceImpl implements ButtonService {
     @Override
     public ButtonResponseDTO resolve(ButtonDTO dto) {
         ButtonEntity buttonEntity = create(dto);
-        
-        String message;
-        boolean nextStep = false;
+        ButtonRule buttonRule;
 
         if (isAzulAbortar(dto)) {
-            message = PRESSIONE_BOTAO_LED;
-            nextStep = true;
+            buttonRule = new AzulAbortarButtonRule();
         } else if (isBatteriesDetonar(dto)) {
-            message = PRESSIONE_SOLTE_BOTAO;
+            buttonRule = new BatteriesDetonarButtonRule();
         } else if (isBrancoCar(dto)) {
-            message = PRESSIONE_BOTAO_LED;
-            nextStep = true;
+            buttonRule = new BrancoCarButtonRule();
         } else if (isBatteriesFrk(dto)) {
-            message = PRESSIONE_SOLTE_BOTAO;
+            buttonRule = new BatteriesFrkButtonRule();
         } else if (isAmarelo(dto)) {
-            message = PRESSIONE_BOTAO_LED;
-            nextStep = true;
+            buttonRule = new AmareloButtonRule();
         } else if (isVermelhoSegure(dto)) {
-            message = PRESSIONE_SOLTE_BOTAO;
+            buttonRule = new VermelhoSegureButtonRule();
         } else {
-            message = PRESSIONE_BOTAO_LED;
-            nextStep = true;
+            buttonRule = new DefaultButtonRule();
         }
 
-        return ButtonResponseDTO.builder()
-                .id(buttonEntity.getId())
-                .message(message)
-                .nextStep(nextStep)
-                .build();
+        return buttonRule.getButtonResponse(buttonEntity.getId(), dto);
     }
 
     @Override
@@ -67,12 +55,12 @@ public class ButtonServiceImpl implements ButtonService {
         Optional<ButtonEntity> button = buttonRepository.findById(dto.getId());
         if (button.isPresent()) {
             ButtonEntity buttonEntity = button.get();
-            buttonEntity.setLedColor(dto.getColorLed());
+            buttonEntity.setLedColor(dto.getLedColor());
             buttonRepository.save(buttonEntity);
         }
 
         return ButtonResponseDTO.builder()
-                .message(mostraMsgTempo(dto.getColorLed()))
+                .message(mostraMsgTempo(dto.getLedColor()))
                 .nextStep(false)
                 .build();
     }
@@ -101,12 +89,12 @@ public class ButtonServiceImpl implements ButtonService {
         return VERMELHO.equals(dto.getButtonColor()) && SEGURE.equals(dto.getText());
     }
 
-    private String mostraMsgTempo(Color colorLed) {
-        return format("Solte quando o marcador de tempo tiver um %s em qualquer posição.", getSegundoPorLed(colorLed));
+    private String mostraMsgTempo(Color ledColor) {
+        return format("Solte quando o marcador de tempo tiver um %s em qualquer posição.", getSegundoPorLed(ledColor));
     }
 
-    private Integer getSegundoPorLed(Color colorLed) {
-        return switch (colorLed) {
+    private Integer getSegundoPorLed(Color ledColor) {
+        return switch (ledColor) {
             case AZUL -> 4;
             case AMARELO -> 5;
             default -> 1;

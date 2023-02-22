@@ -11,5 +11,5 @@ import java.util.UUID;
 @Builder
 public class ButtonSecondStepDTO {
     private UUID id;
-    private Color colorLed;
+    private Color ledColor;
 }

@@ -28,7 +28,7 @@ public class WireController {
     private Gson gson;
 
     @PostMapping("/resolve")
-    public WireResponseDTO resolve(WireDTO dto) {
+    public WireResponseDTO resolve(@RequestBody WireDTO dto) {
         return wireService.resolve(dto);
     }
 
