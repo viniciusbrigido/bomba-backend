@@ -110,7 +110,6 @@ public class ButtonServiceImpl implements ButtonService {
         var button = ButtonEntity.builder()
                 .text(dto.getText())
                 .buttonColor(dto.getButtonColor())
-                .ledColor(dto.getLedColor())
                 .batteries(dto.getBatteries())
                 .leds(gson.toJson(dto.getLeds()))
                 .createdAt(new Date())

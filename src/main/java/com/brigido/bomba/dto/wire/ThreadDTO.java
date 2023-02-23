@@ -9,6 +9,6 @@ import lombok.*;
 @NoArgsConstructor
 @Builder
 public class ThreadDTO {
-    private Integer posicao;
+    private Integer position;
     private Color color;
 }

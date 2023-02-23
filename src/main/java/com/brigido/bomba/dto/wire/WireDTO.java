@@ -3,10 +3,11 @@ package com.brigido.bomba.dto.wire;
 import com.brigido.bomba.enumeration.Color;
 import lombok.*;
 import java.util.*;
-import java.util.stream.Collectors;
 import static com.brigido.bomba.util.Util.onlyNumbers;
 import static java.lang.Integer.parseInt;
+import static java.util.Comparator.*;
 import static java.util.Optional.*;
+import static java.util.stream.Collectors.*;
 
 @Getter
 @Setter
@@ -20,7 +21,9 @@ public class WireDTO {
     private Date createdAt;
 
     public List<ThreadDTO> getWiring() {
-        return ofNullable(wiring).orElseGet(() -> wiring = new ArrayList<>());
+        List<ThreadDTO> threads = ofNullable(wiring).orElseGet(() -> wiring = new ArrayList<>());
+        threads.sort(comparingInt(ThreadDTO::getPosition));
+        return threads;
     }
 
     public ThreadDTO getLastWire() {
@@ -32,6 +35,6 @@ public class WireDTO {
     }
 
     public List<ThreadDTO> getWiresPerColor(Color color) {
-        return wiring.stream().filter(wire -> color.equals(wire.getColor())).collect(Collectors.toList());
+        return getWiring().stream().filter(wire -> color.equals(wire.getColor())).collect(toList());
     }
 }
