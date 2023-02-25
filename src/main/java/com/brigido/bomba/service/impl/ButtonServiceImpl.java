@@ -8,20 +8,27 @@ import com.brigido.bomba.repository.ButtonRepository;
 import com.brigido.bomba.service.ButtonService;
 import com.brigido.bomba.strategy.button.*;
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import jakarta.transaction.Transactional;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import java.lang.reflect.Type;
 import java.util.*;
 import static com.brigido.bomba.enumeration.Color.*;
 import static com.brigido.bomba.enumeration.Indicator.*;
 import static com.brigido.bomba.enumeration.ButtonText.*;
 import static java.lang.String.*;
+import static java.util.stream.Collectors.*;
 
 @Service
 public class ButtonServiceImpl implements ButtonService {
     
     @Autowired
     private ButtonRepository buttonRepository;
+
+    @Autowired
+    private ModelMapper modelMapper;
 
     @Autowired
     private Gson gson;
@@ -118,13 +125,23 @@ public class ButtonServiceImpl implements ButtonService {
         return buttonRepository.save(button);
     }
 
-    @Override
-    public void delete(UUID id) {
-        buttonRepository.deleteById(id);
+    private ButtonDTO parseButton(ButtonEntity button) {
+        ButtonDTO buttonDTO = modelMapper.map(button, ButtonDTO.class);
+        Type listType = new TypeToken<List<LedDTO>>(){}.getType();
+        buttonDTO.setLeds(gson.fromJson(button.getLeds(), listType));
+        return buttonDTO;
     }
 
     @Override
-    public List<ButtonEntity> list() {
-        return buttonRepository.findAll();
+    public List<ButtonDTO> list() {
+        return buttonRepository.findAll()
+                .stream()
+                .map(this::parseButton)
+                .collect(toList());
+    }
+
+    @Override
+    public void delete(UUID id) {
+        buttonRepository.deleteById(id);
     }
 }

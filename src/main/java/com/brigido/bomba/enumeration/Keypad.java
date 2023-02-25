@@ -37,22 +37,22 @@ public enum Keypad {
     IMAGEM_27(27),
     IMAGEM_28(28);
 
-    private Integer arquivo;
+    private final Integer arquivo;
 
     public static List<Keypad> getColumnA() {
-        return asList(IMAGEM_1, IMAGEM_2, IMAGEM_3, IMAGEM_4, IMAGEM_5, IMAGEM_6, IMAGEM_7);//OK
+        return asList(IMAGEM_1, IMAGEM_2, IMAGEM_3, IMAGEM_4, IMAGEM_5, IMAGEM_6, IMAGEM_7);
     }
 
     public static List<Keypad> getColumnB() {
-        return asList(IMAGEM_8, IMAGEM_1, IMAGEM_7, IMAGEM_9, IMAGEM_10, IMAGEM_6, IMAGEM_11);//OK
+        return asList(IMAGEM_8, IMAGEM_1, IMAGEM_7, IMAGEM_9, IMAGEM_10, IMAGEM_6, IMAGEM_11);
     }
 
     public static List<Keypad> getColumnC() {
-        return asList(IMAGEM_12, IMAGEM_13, IMAGEM_9, IMAGEM_14, IMAGEM_15, IMAGEM_16, IMAGEM_10);//OK
+        return asList(IMAGEM_12, IMAGEM_13, IMAGEM_9, IMAGEM_14, IMAGEM_15, IMAGEM_16, IMAGEM_10);
     }
 
     public static List<Keypad> getColumnD() {
-        return asList(IMAGEM_17, IMAGEM_18, IMAGEM_19, IMAGEM_5, IMAGEM_14, IMAGEM_11, IMAGEM_20);//OK
+        return asList(IMAGEM_17, IMAGEM_18, IMAGEM_19, IMAGEM_5, IMAGEM_14, IMAGEM_11, IMAGEM_20);
     }
 
     public static List<Keypad> getColumnE() {

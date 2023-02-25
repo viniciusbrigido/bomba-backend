@@ -1,22 +1,28 @@
 package com.brigido.bomba.service.impl;
 
-import com.brigido.bomba.dto.wire.WireDTO;
-import com.brigido.bomba.dto.wire.WireResponseDTO;
+import com.brigido.bomba.dto.wire.*;
 import com.brigido.bomba.entity.WireEntity;
 import com.brigido.bomba.repository.WireRepository;
 import com.brigido.bomba.service.WireService;
 import com.brigido.bomba.strategy.wire.*;
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import jakarta.transaction.Transactional;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import java.lang.reflect.Type;
 import java.util.*;
+import static java.util.stream.Collectors.toList;
 
 @Service
 public class WireServiceImpl implements WireService {
 
     @Autowired
     private WireRepository wireRepository;
+
+    @Autowired
+    private ModelMapper modelMapper;
 
     @Autowired
     private Gson gson;
@@ -52,13 +58,23 @@ public class WireServiceImpl implements WireService {
         wireRepository.save(wire);
     }
 
-    @Override
-    public void delete(UUID id) {
-        wireRepository.deleteById(id);
+    private WireDTO parseWire(WireEntity wire) {
+        WireDTO wireDTO = modelMapper.map(wire, WireDTO.class);
+        Type listType = new TypeToken<List<ThreadDTO>>(){}.getType();
+        wireDTO.setWiring(gson.fromJson(wire.getWiring(), listType));
+        return wireDTO;
     }
 
     @Override
-    public List<WireEntity> list() {
-        return wireRepository.findAll();
+    public List<WireDTO> list() {
+        return wireRepository.findAll()
+                .stream()
+                .map(this::parseWire)
+                .collect(toList());
+    }
+
+    @Override
+    public void delete(UUID id) {
+        wireRepository.deleteById(id);
     }
 }

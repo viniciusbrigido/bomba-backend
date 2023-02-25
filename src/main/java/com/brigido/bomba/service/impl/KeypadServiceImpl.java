@@ -7,17 +7,24 @@ import com.brigido.bomba.enumeration.Keypad;
 import com.brigido.bomba.repository.KeypadRepository;
 import com.brigido.bomba.service.KeypadService;
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import jakarta.transaction.Transactional;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import java.lang.reflect.Type;
 import java.util.*;
 import static com.brigido.bomba.enumeration.Keypad.*;
+import static java.util.stream.Collectors.*;
 
 @Service
 public class KeypadServiceImpl implements KeypadService {
 
     @Autowired
     private KeypadRepository keypadRepository;
+
+    @Autowired
+    private ModelMapper modelMapper;
 
     @Autowired
     private Gson gson;
@@ -72,9 +79,19 @@ public class KeypadServiceImpl implements KeypadService {
         keypadRepository.save(keypad);
     }
 
+    private KeypadDTO parseKeypad(KeypadEntity keypad) {
+        KeypadDTO keypadDTO = modelMapper.map(keypad, KeypadDTO.class);
+        Type listType = new TypeToken<List<Keypad>>(){}.getType();
+        keypadDTO.setKeypads(gson.fromJson(keypad.getKeypads(), listType));
+        return keypadDTO;
+    }
+
     @Override
-    public List<KeypadEntity> list() {
-        return keypadRepository.findAll();
+    public List<KeypadDTO> list() {
+        return keypadRepository.findAll()
+                .stream()
+                .map(this::parseKeypad)
+                .collect(toList());
     }
 
     @Override
