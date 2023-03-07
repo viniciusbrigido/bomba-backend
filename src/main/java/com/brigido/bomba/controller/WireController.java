@@ -25,7 +25,7 @@ public class WireController {
         return wireService.list();
     }
 
-    @DeleteMapping
+    @DeleteMapping("/{id}")
     public void delete(@PathVariable UUID id) {
         wireService.delete(id);
     }

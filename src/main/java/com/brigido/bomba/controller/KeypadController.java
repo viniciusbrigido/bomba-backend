@@ -26,7 +26,7 @@ public class KeypadController {
         return keypadService.list();
     }
 
-    @DeleteMapping
+    @DeleteMapping("/{id}")
     public void delete(@PathVariable UUID id) {
         keypadService.delete(id);
     }

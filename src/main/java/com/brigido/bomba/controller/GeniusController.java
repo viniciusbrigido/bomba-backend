@@ -26,7 +26,7 @@ public class GeniusController {
         return geniusService.list();
     }
 
-    @DeleteMapping
+    @DeleteMapping("/{id}")
     public void delete(@PathVariable UUID id) {
         geniusService.delete(id);
     }

@@ -30,7 +30,7 @@ public class ButtonController {
         return buttonService.list();
     }
     
-    @DeleteMapping
+    @DeleteMapping("/{id}")
     public void delete(@PathVariable UUID id) {
         buttonService.delete(id);
     }
