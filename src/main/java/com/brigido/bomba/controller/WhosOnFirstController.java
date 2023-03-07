@@ -20,13 +20,8 @@ public class WhosOnFirstController {
         return whosOnFirstService.resolve(dto);
     }
 
-    @PostMapping("/resolve-second-step")
-    public WhosOnFirstDTO resolveSecondStep(@RequestBody WhosOnFirstSecondStepDTO dto) {
-        return whosOnFirstService.resolveSecondStep(dto);
-    }
-
     @GetMapping
-    public List<WhosOnFirstDTO> list() {
+    public List<WhosOnFirstCompleteDTO> list() {
         return whosOnFirstService.list();
     }
 

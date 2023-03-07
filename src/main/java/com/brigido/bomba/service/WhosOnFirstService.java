@@ -7,7 +7,6 @@ import java.util.UUID;
 public interface WhosOnFirstService {
 
     WhosOnFirstResponseDTO resolve(WhosOnFirstDTO dto);
-    WhosOnFirstDTO resolveSecondStep(WhosOnFirstSecondStepDTO dto);
-    List<WhosOnFirstDTO> list();
+    List<WhosOnFirstCompleteDTO> list();
     void delete(UUID id);
 }

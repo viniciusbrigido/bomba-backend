@@ -12,6 +12,9 @@ import org.springframework.stereotype.Service;
 import java.util.*;
 import com.google.gson.reflect.TypeToken;
 import java.lang.reflect.Type;
+import static com.brigido.bomba.enumeration.WhosOnFirstTable.*;
+import static com.brigido.bomba.enumeration.WhosOnFirstWords.*;
+import static java.util.Objects.*;
 import static java.util.stream.Collectors.toList;
 
 @Service
@@ -28,49 +31,57 @@ public class WhosOnFirstServiceImpl implements WhosOnFirstService {
 
     @Override
     public WhosOnFirstResponseDTO resolve(WhosOnFirstDTO dto) {
-        WhosOnFirstEntity whosOnFirst = whosOnFirstRepository.findById(dto.getId()).orElse(create(dto));
+        WhosOnFirstEntity whosOnFirst = isNull(dto.getId()) ? create(dto) : findById(dto.getId());
 
-//        return buttonRule.getButtonResponse(buttonEntity.getId(), dto);
+        Integer wordIndex = findWordIndexByName(dto.getDisplay());
         return WhosOnFirstResponseDTO.builder()
                 .id(whosOnFirst.getId())
+                .response(getSelectedWord(dto.getWords(), wordIndex))
                 .build();
-    }
-
-    @Override
-    public WhosOnFirstDTO resolveSecondStep(WhosOnFirstSecondStepDTO dto) {
-        Optional<WhosOnFirstEntity> whosOnFirst = whosOnFirstRepository.findById(dto.getId());
-//        if (button.isPresent()) {
-//            ButtonEntity buttonEntity = button.get();
-//            buttonEntity.setLedColor(dto.getLedColor());
-//            buttonRepository.save(buttonEntity);
-//        }
-//
-//        return ButtonResponseDTO.builder()
-//                .message(mostraMsgTempo(dto.getLedColor()))
-//                .nextStep(false)
-//                .build();
-
-        return null;
     }
 
     @Transactional
     public WhosOnFirstEntity create(WhosOnFirstDTO dto) {
-        var button = WhosOnFirstEntity.builder()
-                .build();
-
-        return whosOnFirstRepository.save(button);
+        WhosOnFirstEntity whosOnFirst = new WhosOnFirstEntity();
+        setWhosOnFirstStep(whosOnFirst, dto);
+        return whosOnFirstRepository.save(whosOnFirst);
     }
 
-    private WhosOnFirstDTO parseWhosOnFirst(WhosOnFirstEntity whosOnFirst) {
-        WhosOnFirstDTO whosOnFirstDTO = modelMapper.map(whosOnFirst, WhosOnFirstDTO.class);
-        Type listType = new TypeToken<List<String>>(){}.getType();
-//        whosOnFirstDTO.setWords6(gson.fromJson(whosOnFirst.getWords6(), listType));
+    private WhosOnFirstEntity findById(UUID id) {
+        return whosOnFirstRepository.findById(id).orElseThrow(() -> new RuntimeException("Entidade não encontrada!"));
+    }
 
-        return whosOnFirstDTO;
+    public void setWhosOnFirstStep(WhosOnFirstEntity whosOnFirst, WhosOnFirstDTO dto) {
+        String display = dto.getDisplay();
+        String words = gson.toJson(dto.getWords());
+        switch (dto.getStep()) {
+            case 1 -> {
+                whosOnFirst.setDisplay1(display);
+                whosOnFirst.setWords1(words);
+            }
+            case 2 -> {
+                whosOnFirst.setDisplay2(display);
+                whosOnFirst.setWords2(words);
+            }
+            case 3 -> {
+                whosOnFirst.setDisplay3(display);
+                whosOnFirst.setWords3(words);
+            }
+        }
+    }
+
+    private WhosOnFirstCompleteDTO parseWhosOnFirst(WhosOnFirstEntity whosOnFirst) {
+        WhosOnFirstCompleteDTO whosOnFirstCompleteDTO = modelMapper.map(whosOnFirst, WhosOnFirstCompleteDTO.class);
+        Type listType = new TypeToken<List<String>>(){}.getType();
+        whosOnFirstCompleteDTO.setWords1(gson.fromJson(whosOnFirst.getWords1(), listType));
+        whosOnFirstCompleteDTO.setWords2(gson.fromJson(whosOnFirst.getWords2(), listType));
+        whosOnFirstCompleteDTO.setWords3(gson.fromJson(whosOnFirst.getWords3(), listType));
+
+        return whosOnFirstCompleteDTO;
     }
 
     @Override
-    public List<WhosOnFirstDTO> list() {
+    public List<WhosOnFirstCompleteDTO> list() {
         return whosOnFirstRepository.findAll()
                 .stream()
                 .map(this::parseWhosOnFirst)

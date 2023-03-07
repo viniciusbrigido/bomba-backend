@@ -18,4 +18,8 @@ public class WhosOnFirstEntity {
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id", columnDefinition = "uuid", unique = true, nullable = false, updatable = false)
     private UUID id;
+
+    private String display1, display2, display3;
+
+    private String words1, words2, words3;
 }
