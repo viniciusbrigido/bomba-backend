@@ -8,19 +8,15 @@ import java.io.Serializable;
 import java.util.Date;
 import java.util.UUID;
 
-@Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
+@Getter @Setter
+@NoArgsConstructor @AllArgsConstructor
 @Builder
-@EqualsAndHashCode(of = "id")
 @Entity
 @Table(name = "button")
 public class ButtonEntity implements Serializable {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "id", columnDefinition = "uuid", unique = true, nullable = false, updatable = false)
+    @GeneratedValue
     private UUID id;
 
     @Enumerated(EnumType.STRING)

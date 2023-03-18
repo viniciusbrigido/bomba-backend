@@ -10,5 +10,5 @@ import java.util.UUID;
 @Builder
 public class WhosOnFirstResponseDTO {
     private UUID id;
-    private String response;
+    private String message;
 }

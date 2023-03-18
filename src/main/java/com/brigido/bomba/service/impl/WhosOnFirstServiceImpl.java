@@ -36,7 +36,7 @@ public class WhosOnFirstServiceImpl implements WhosOnFirstService {
         Integer wordIndex = findWordIndexByName(dto.getDisplay());
         return WhosOnFirstResponseDTO.builder()
                 .id(whosOnFirst.getId())
-                .response(getSelectedWord(dto.getWords(), wordIndex))
+                .message(getSelectedWord(dto.getWords(), wordIndex))
                 .build();
     }
 

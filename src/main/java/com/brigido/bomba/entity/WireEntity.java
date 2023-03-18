@@ -6,19 +6,15 @@ import java.util.Date;
 import java.util.UUID;
 import lombok.*;
 
-@Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
+@Getter @Setter
+@NoArgsConstructor @AllArgsConstructor
 @Builder
-@EqualsAndHashCode(of = "id")
 @Entity
 @Table(name = "wire")
 public class WireEntity implements Serializable {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "id", columnDefinition = "uuid", unique = true, nullable = false, updatable = false)
+    @GeneratedValue
     private UUID id;
 
     private String serial;
