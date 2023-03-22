@@ -21,9 +21,10 @@ public class WireDTO {
     private Date createdAt;
 
     public List<ThreadDTO> getWiring() {
-        List<ThreadDTO> threads = ofNullable(wiring).orElseGet(() -> wiring = new ArrayList<>());
-        threads.sort(comparingInt(ThreadDTO::getPosition));
-        return threads;
+        if (Objects.isNull(wiring)) {
+            wiring = new ArrayList<>();
+        }
+        return wiring;
     }
 
     public ThreadDTO getLastWire() {

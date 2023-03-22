@@ -2,9 +2,9 @@ package com.brigido.bomba.service.impl;
 
 import com.brigido.bomba.dto.wire.*;
 import com.brigido.bomba.entity.WireEntity;
+import com.brigido.bomba.enumeration.WireRule;
 import com.brigido.bomba.repository.WireRepository;
 import com.brigido.bomba.service.WireService;
-import com.brigido.bomba.strategy.wire.*;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import jakarta.transaction.Transactional;
@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.lang.reflect.Type;
 import java.util.*;
+import static java.lang.String.*;
 import static java.util.stream.Collectors.toList;
 
 @Service
@@ -37,13 +38,7 @@ public class WireServiceImpl implements WireService {
 
     private String wireRuleMessage(WireDTO dto) {
         int wireCount = dto.getWiring().size();
-        WireRule wireRule = switch (wireCount) {
-            case 3 -> new ThreeWiresRule();
-            case 4 -> new FourWiresRule();
-            case 5 -> new FiveWiresRule();
-            default -> new SixWiresRule();
-        };
-
+        WireRule wireRule = WireRule.valueOf(format("WIRE_RULE_%s", wireCount));
         return wireRule.rule(dto);
     }
 
